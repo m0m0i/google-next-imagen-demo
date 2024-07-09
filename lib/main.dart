@@ -1,5 +1,8 @@
+import 'dart:nativewrappers/_internal/vm/lib/ffi_allocation_patch.dart';
+
 import 'package:flutter/material.dart';
 
+import 'package:googleapis/aiplatform/v1.dart';
 import "package:googleapis_auth/auth_io.dart";
 import "package:http/http.dart" as http;
 
@@ -33,6 +36,14 @@ class _MainAppState extends State<MainApp> {
     AccessCredentials credentials =
         await obtainAccessCredentialsViaServiceAccount(
             accountCredentials, scopes, client);
+
+    AiplatformApi aiplatformApi = AiplatformApi(client);
+
+// This example demonstrates usage for a Dart command line application.
+//
+// For details of how to use this package in Flutter, see
+// https://flutter.dev/docs/development/data-and-backend/google-apis
+    // aiplatformApi.projects.locations.publishers.models
 
     client.close();
 
