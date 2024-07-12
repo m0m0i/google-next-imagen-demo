@@ -1,7 +1,53 @@
+import "dart:convert";
+
 import 'package:flutter/material.dart';
+import "package:google_next_imagen_demo/models/imagen_resopnse.dart";
 
 import "package:googleapis_auth/auth_io.dart";
 import "package:http/http.dart" as http;
+
+Future<ImagenResponse> generateImage() async {
+  String accessToken =
+      "ya29.a0AXooCguB2JcuXMDU3XA-e-rR-9wixvm_V-0coErHQ-rvRgFZTZzlEIyOKlLE1a2bcLrdXsMSzpDCsBNUe5b59eUuqGoW5qT-Vg_OEz3Z7v3cLxTWS7UKP2cm-2LhpEapogtnbfc_SImi6ml_YqWtnhBShZVLgURbAQgQWThHaAaCgYKAVMSARISFQHGX2MiBV3fcCSRv5ag-DxwOP_9jQ0177";
+
+  Map<String, String> headers = {
+    "Authorization": "Bearer $accessToken",
+    "Content-Type": "application/json; charset=utf-8"
+  };
+
+  var body = {
+    "instances": [
+      {
+        "prompt": "a beautiful woman standing by the wall",
+      }
+    ],
+    "parameters": {
+      "sampleCount": 2,
+      "aspectRatio": "1:1",
+      "outputOptions": {
+        "mimeType": "image/png",
+        "compressionQuality": 80,
+      },
+    }
+  };
+
+  final res = await http.post(
+    Uri.https(
+      'us-central1-aiplatform.googleapis.com',
+      'v1/projects/next-tokyo-imagen-flutter-demo/locations/us-central1/publishers/google/models/imagen-3.0-generate-preview-0611:predict',
+    ),
+    headers: headers,
+    body: jsonEncode(body),
+  );
+
+  if (res.statusCode == 200) {
+    ImagenResponse imagenResponse =
+        ImagenResponse.fromJson(jsonDecode(res.body));
+    return imagenResponse;
+  } else {
+    throw Exception('Failed to generate images');
+  }
+}
 
 void main() {
   runApp(const MainApp());
@@ -16,6 +62,7 @@ class MainApp extends StatefulWidget {
 
 class _MainAppState extends State<MainApp> {
   var jwt = 'jwt';
+  var image;
 
   Future<AccessCredentials> obtainCredentials() async {
     var accountCredentials = ServiceAccountCredentials.fromJson({
@@ -39,21 +86,43 @@ class _MainAppState extends State<MainApp> {
     setState(() {
       jwt = credentials.accessToken.data;
     });
+
     print(credentials.accessToken);
+
+    final imagenRes = await generateImage();
+    setState(() {
+      image = imagenRes.predictions[0].bytesBase64Encoded;
+    });
+
     return credentials;
+  }
+
+  Widget renderImage(image) {
+    if (image != null) {
+      return Image.memory(
+        base64Decode(image),
+        width: 700,
+        height: 700,
+      );
+    } else {
+      return const Text("waiting for generating image");
+    }
   }
 
   @override
   Widget build(BuildContext context) {
     return MaterialApp(
       home: Scaffold(
-        body: Center(
-          child: ElevatedButton(
-            onPressed: () async {
-              await obtainCredentials();
-            },
-            child: Text(jwt),
-          ),
+        body: Column(
+          children: [
+            renderImage(image),
+            ElevatedButton(
+              onPressed: () async {
+                await obtainCredentials();
+              },
+              child: const Text('GENERATE'),
+            ),
+          ],
         ),
       ),
     );
