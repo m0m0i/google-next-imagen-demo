@@ -1,31 +1,61 @@
 import 'package:flutter/material.dart';
+import 'screens/generate_image.dart';
+
+// 一瞬文字化けするのは日本語のせい
+// https://gaprot.jp/2022/03/28/flutter_dev_bugfix_text/
 
 void main() {
   runApp(const MainApp());
 }
 
-class MainApp extends StatefulWidget {
+class MainApp extends StatelessWidget {
   const MainApp({super.key});
 
   @override
-  State<MainApp> createState() => _MainAppState();
+  Widget build(BuildContext context) {
+    return const MaterialApp(
+      home: HomeStatefulWidget(),
+    );
+  }
 }
 
-class _MainAppState extends State<MainApp> {
+class HomeStatefulWidget extends StatefulWidget {
+  const HomeStatefulWidget({super.key});
+
+  @override
+  State<HomeStatefulWidget> createState() => _HomeStatefulWidgetState();
+}
+
+class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
+  static const List<Widget> _screens = [
+    GenerateImage(),
+    Text('edit'),
+    Text('convo'),
+  ];
+
+  int _selectedIndex = 0;
+
+  void _onItemTapped(int index) {
+    setState(() {
+      _selectedIndex = index;
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-      home: Scaffold(
-        body: Center(
-          child: Column(
-            mainAxisSize: MainAxisSize.min,
-            children: [
-              const Padding(
-                padding: EdgeInsets.all(8),
-              ),
-            ],
-          ),
-        ),
+    return Scaffold(
+      body: _screens[_selectedIndex],
+      bottomNavigationBar: BottomNavigationBar(
+        currentIndex: _selectedIndex,
+        onTap: _onItemTapped,
+        items: const [
+          BottomNavigationBarItem(
+              icon: Icon(Icons.image), label: 'Generate Image'),
+          BottomNavigationBarItem(icon: Icon(Icons.edit), label: 'Image Edit'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.chat), label: 'Copy Writing'),
+        ],
+        type: BottomNavigationBarType.fixed,
       ),
     );
   }
