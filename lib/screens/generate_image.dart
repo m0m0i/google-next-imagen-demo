@@ -12,11 +12,24 @@ class GenerateImage extends StatefulWidget {
 
 class _GenerateImageState extends State<GenerateImage> {
   var image = '';
+  late TextEditingController _controller;
 
   final vertexai = VertexAI();
 
-  Future<void> handleGenerate() async {
-    final generatedImage = await vertexai.generateImage();
+  @override
+  void initState() {
+    super.initState();
+    _controller = TextEditingController();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    super.dispose();
+  }
+
+  Future<void> handleGenerate(prompt) async {
+    final generatedImage = await vertexai.generateImage(prompt);
 
     setState(() {
       image = generatedImage.predictions[0].bytesBase64Encoded;
@@ -27,8 +40,7 @@ class _GenerateImageState extends State<GenerateImage> {
     if (image != '') {
       return Image.memory(
         base64Decode(image),
-        width: 700,
-        height: 700,
+        width: double.infinity,
       );
     } else {
       return const Text("Try Imagen 3 image generation");
@@ -45,15 +57,26 @@ class _GenerateImageState extends State<GenerateImage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            renderImage(image),
-            const Padding(
-              padding: EdgeInsets.all(8),
+            // renderImage(image),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: renderImage(image),
             ),
-            ElevatedButton(
-              onPressed: () async {
-                await handleGenerate();
-              },
-              child: const Text('GENERATE'),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: TextField(
+                controller: _controller,
+                minLines: 1,
+                maxLines: 2,
+                decoration: InputDecoration(
+                  suffixIcon: IconButton(
+                    onPressed: () async {
+                      await handleGenerate(_controller.value.text);
+                    },
+                    icon: const Icon(Icons.send),
+                  ),
+                ),
+              ),
             ),
           ],
         ),

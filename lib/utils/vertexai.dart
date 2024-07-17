@@ -7,7 +7,7 @@ import "package:google_next_imagen_demo/utils/obtain_credentials.dart";
 import "package:http/http.dart" as http;
 
 class VertexAI {
-  FutureOr<ImagenResponse> generateImage() async {
+  FutureOr<ImagenResponse> generateImage(prompt) async {
     final credentials = await obtainCredentials();
 
     Map<String, String> headers = {
@@ -18,8 +18,7 @@ class VertexAI {
     var body = {
       "instances": [
         {
-          "prompt":
-              "a beautiful and glamorous female fashion model with a dog is taken her portrait photo at the central park in Summer",
+          "prompt": "$prompt",
         }
       ],
       "parameters": {
