@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'screens/home.dart';
+import 'screens/generate_image.dart';
 
 // 一瞬文字化けするのは日本語のせい
 // https://gaprot.jp/2022/03/28/flutter_dev_bugfix_text/
@@ -13,8 +13,11 @@ class MainApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const MaterialApp(
-      home: HomeStatefulWidget(),
+    return MaterialApp(
+      home: const HomeStatefulWidget(),
+      theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.lightBlue)),
     );
   }
 }
@@ -28,8 +31,9 @@ class HomeStatefulWidget extends StatefulWidget {
 
 class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
   static const List<Widget> _screens = [
-    HomeScreen(),
-    // Add other screens here
+    GenerateImage(),
+    Text('edit'),
+    Text('convo'),
   ];
 
   int _selectedIndex = 0;
@@ -48,9 +52,11 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
         currentIndex: _selectedIndex,
         onTap: _onItemTapped,
         items: const [
-          BottomNavigationBarItem(icon: Icon(Icons.image), label: 'Generate Image'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.image), label: 'Generate Image'),
           BottomNavigationBarItem(icon: Icon(Icons.edit), label: 'Image Edit'),
-          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Copy Writing'),
+          BottomNavigationBarItem(
+              icon: Icon(Icons.chat), label: 'Copy Writing'),
         ],
         type: BottomNavigationBarType.fixed,
       ),
