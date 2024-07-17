@@ -71,7 +71,8 @@ class _GenerateImageState extends State<GenerateImage> {
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                     onPressed: () async {
-                      await handleGenerate(_controller.value.text);
+                      final prompt = _controller.value.text;
+                      if (prompt != "") await handleGenerate(prompt);
                     },
                     icon: const Icon(Icons.send),
                   ),
