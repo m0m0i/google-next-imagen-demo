@@ -1,7 +1,10 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
+import 'package:image_picker/image_picker.dart';
+import 'package:image_picker_for_web/image_picker_for_web.dart';
 
 class EditImage extends StatefulWidget {
   const EditImage({super.key});
@@ -11,35 +14,54 @@ class EditImage extends StatefulWidget {
 }
 
 class _EditImageState extends State<EditImage> {
-  var image = '';
-  late TextEditingController _controller;
+  XFile? pickedImage;
+  Uint8List? imageToRender;
+  late TextEditingController _textController;
 
   final vertexai = VertexAI();
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    _textController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    _textController.dispose();
     super.dispose();
   }
 
-  Future<void> handleGenerate(prompt, image) async {
-    final generatedImage = await vertexai.editImage(prompt, image);
+  final ImagePickerPlugin _picker = ImagePickerPlugin();
+
+  Future<void> _handlePickImageFromCamera() async {
+    pickedImage = await _picker.getImageFromSource(source: ImageSource.camera);
+    imageToRender = await pickedImage?.readAsBytes();
+
+    setState(() {});
+  }
+
+  Future<void> _handlePickImageFromGallery() async {
+    pickedImage = await _picker.getImageFromSource(source: ImageSource.gallery);
+    imageToRender = await pickedImage?.readAsBytes();
+
+    setState(() {});
+  }
+
+  Future<void> handleGenerate(prompt) async {
+    String imageToSend = base64Encode(imageToRender!.toList());
+    final generatedImage = await vertexai.editImage(prompt, imageToSend);
 
     setState(() {
-      image = generatedImage.predictions[0].bytesBase64Encoded;
+      imageToRender =
+          base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
     });
   }
 
   Widget renderImage(image) {
-    if (image != '') {
+    if (image != null) {
       return Image.memory(
-        base64Decode(image),
+        image,
         width: double.infinity,
       );
     } else {
@@ -57,28 +79,45 @@ class _EditImageState extends State<EditImage> {
         child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
-            // renderImage(image),
             Padding(
               padding: const EdgeInsets.all(24),
-              child: renderImage(image),
+              child: renderImage(imageToRender),
             ),
             Padding(
               padding: const EdgeInsets.all(24),
               child: TextField(
-                controller: _controller,
+                controller: _textController,
                 minLines: 1,
                 maxLines: 2,
                 decoration: InputDecoration(
                   suffixIcon: IconButton(
                     onPressed: () async {
-                      final prompt = _controller.value.text;
-                      if (prompt != "") await handleGenerate(prompt, "image");
+                      final prompt = _textController.value.text;
+                      if (prompt != "" && pickedImage != null) {
+                        await handleGenerate(prompt);
+                      }
                     },
                     icon: const Icon(Icons.send),
                   ),
                 ),
               ),
             ),
+            Padding(
+              padding: const EdgeInsets.all(24),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.center,
+                children: [
+                  MaterialButton(
+                    onPressed: _handlePickImageFromCamera,
+                    child: const Icon(Icons.photo_camera),
+                  ),
+                  MaterialButton(
+                    onPressed: _handlePickImageFromGallery,
+                    child: const Icon(Icons.folder),
+                  ),
+                ],
+              ),
+            )
           ],
         ),
       ),
