@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_next_imagen_demo/screens/edit_image.dart';
 import 'screens/generate_image.dart';
 
 // 一瞬文字化けするのは日本語のせい
@@ -32,7 +33,7 @@ class HomeStatefulWidget extends StatefulWidget {
 class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
   static const List<Widget> _screens = [
     GenerateImage(),
-    Text('edit'),
+    EditImage(),
     Text('convo'),
   ];
 
