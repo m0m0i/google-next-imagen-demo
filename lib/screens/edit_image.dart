@@ -48,9 +48,8 @@ class _EditImageState extends State<EditImage> {
     setState(() {});
   }
 
-  Future<void> handleGenerate(prompt) async {
-    String imageToSend = base64Encode(imageToRender!.toList());
-    final generatedImage = await vertexai.editImage(prompt, imageToSend);
+  Future<void> handleGenerate(String prompt) async {
+    final generatedImage = await vertexai.editImage(prompt, imageToRender!);
 
     setState(() {
       imageToRender =

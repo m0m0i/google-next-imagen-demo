@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:formatted_text/formatted_text.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
@@ -18,14 +19,15 @@ class _CopyWritingState extends State<CopyWriting> {
   Uint8List? imageToRender;
   late TextEditingController _textController;
 
-  String prompt = "あなたは世界で最も優秀な広告マーケターです。添付の画像に対する商品の広告文を提案してください。回答は広告文のみを返してください。";
+  String prompt =
+      "あなたは世界で最も優秀な広告マーケターです。添付の画像に対する商品の広告文を提案してください。回答は200文字以内でタイトルと広告文を返してください。なお、タイトルは太字にしてください。";
 
   final vertexai = VertexAI();
 
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController();
+    _textController = FormattedTextEditingController();
   }
 
   @override
@@ -52,11 +54,12 @@ class _CopyWritingState extends State<CopyWriting> {
 
   Future<void> _handleGenerate() async {
     String imageToSend = base64Encode(imageToRender!.toList());
-    var copywriteResponse = await vertexai.CopyWriting(prompt, imageToSend);
-    print (copywriteResponse.candidates[0].content.parts[0].text);
+    var copywriteResponse = await vertexai.copyWriting(prompt, imageToSend);
+    debugPrint(copywriteResponse.candidates[0].content.parts[0].text);
 
     setState(() {
-      _textController.text = copywriteResponse.candidates[0].content.parts[0].text;
+      _textController.text =
+          copywriteResponse.candidates[0].content.parts[0].text;
     });
   }
 
@@ -65,16 +68,16 @@ class _CopyWritingState extends State<CopyWriting> {
     final imageSize = screenSize.shortestSide * 0.75;
 
     if (image != null) {
-      return  SizedBox(
-                width: imageSize,
-                height: imageSize,
-                child:Image.memory(
-                  image,
-                  width: double.infinity,
-                )
-              );
+      return SizedBox(
+          width: imageSize,
+          height: imageSize,
+          child: Image.memory(
+            image,
+            width: double.infinity,
+          ));
     } else {
-      return const Text("Try Gemini1.5 Flash Copywriting with your uploaded image");
+      return const Text(
+          "Try Gemini 1.5 Flash Copywriting skill with your image");
     }
   }
 
@@ -105,17 +108,24 @@ class _CopyWritingState extends State<CopyWriting> {
                     onPressed: _handlePickImageFromGallery,
                     child: const Icon(Icons.folder),
                   ),
-                   MaterialButton(
+                  MaterialButton(
                     onPressed: _handleGenerate,
                     child: const Icon(Icons.send),
                   ),
                 ],
               ),
             ),
-            Padding(padding: const EdgeInsets.all(24), 
-            child:
-              Text(_textController.text)
-            ),
+            Padding(
+                padding: const EdgeInsets.all(24),
+                child: FormattedText(
+                  _textController.text,
+                  formatters: const [
+                    ...FormattedTextDefaults.formattedTextDefaultFormatters,
+                    FormattedTextFormatter(
+                        patternChars: '**',
+                        style: TextStyle(fontWeight: FontWeight.bold))
+                  ],
+                )),
           ],
         ),
       ),
