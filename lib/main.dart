@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:google_next_imagen_demo/screens/copy_writing.dart';
 import 'package:google_next_imagen_demo/screens/edit_image.dart';
 import 'screens/generate_image.dart';
 
@@ -34,7 +35,7 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
   static const List<Widget> _screens = [
     GenerateImage(),
     EditImage(),
-    Text('convo'),
+    CopyWriting(),
   ];
 
   int _selectedIndex = 0;
