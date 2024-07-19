@@ -1,6 +1,9 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
+import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
 
 class GenerateImage extends StatefulWidget {
@@ -11,10 +14,12 @@ class GenerateImage extends StatefulWidget {
 }
 
 class _GenerateImageState extends State<GenerateImage> {
-  var image = '';
+  Uint8List? image ;
   late TextEditingController _controller;
 
   final vertexai = VertexAI();
+
+  bool visibleBool = false;
 
   @override
   void initState() {
@@ -29,22 +34,16 @@ class _GenerateImageState extends State<GenerateImage> {
   }
 
   Future<void> handleGenerate(prompt) async {
+    setState(() {
+      visibleBool = true;
+    });
+
     final generatedImage = await vertexai.generateImage(prompt);
 
     setState(() {
-      image = generatedImage.predictions[0].bytesBase64Encoded;
+      image = base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
+      visibleBool = false;
     });
-  }
-
-  Widget renderImage(image) {
-    if (image != '') {
-      return Image.memory(
-        base64Decode(image),
-        width: double.infinity,
-      );
-    } else {
-      return const Text("Try Imagen 3 image generation");
-    }
   }
 
   @override
@@ -53,14 +52,18 @@ class _GenerateImageState extends State<GenerateImage> {
       appBar: AppBar(
         title: const Text('イメージ生成'),
       ),
-      body: Center(
-        child: Column(
+      body:Stack(
+          clipBehavior: Clip.hardEdge, fit: StackFit.expand,
+          children:[
+            Center(
+              child: 
+          Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             // renderImage(image),
             Padding(
               padding: const EdgeInsets.all(24),
-              child: renderImage(image),
+              child: renderImage(context,image,const Text("Try Imagen 3 image generation")),
             ),
             Padding(
               padding: const EdgeInsets.all(24),
@@ -81,7 +84,10 @@ class _GenerateImageState extends State<GenerateImage> {
             ),
           ],
         ),
-      ),
+            ),
+        OverlayProgressIndicator(visible: visibleBool)
+          ],
+        ),
     );
   }
 }
