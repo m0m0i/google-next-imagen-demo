@@ -76,14 +76,10 @@ class VertexAI {
         }
       ],
       "parameters": {
-        // "sampleCount": 1,
+        "sampleCount": 1,
         "aspectRatio": "1:1",
         "editConfig": {
-          // Comment out the following two lines when using the Product Image Editing mode
-          "editMode": "inpainting-insert",
-          "maskMode": {"maskType": "background"},
-          // Uncomment the following to use the Product Image Editing mode
-          // "editMode": "product-image",
+          "editMode": "product-image",
         },
         "outputOptions": {
           "mimeType": "image/png",
@@ -117,7 +113,7 @@ class VertexAI {
     }
   }
 
-  FutureOr<GeminiResponse> CopyWriting(prompt, image) async {
+  FutureOr<GeminiResponse> copyWriting(String prompt, String image) async {
     final credentials = await obtainCredentials();
 
     Map<String, String> headers = {
@@ -126,21 +122,21 @@ class VertexAI {
     };
 
     var body = {
-        "contents": {
-          "role": "USER",
-          "parts": [
-            {
-              "inlineData": {
-                "mimeType": "image/png",
-                "data": "$image"
-              }
-            },
-            {
-              "text": "$prompt"
+      "contents": {
+        "role": "USER",
+        "parts": [
+          {
+            "inlineData": {
+              "mimeType": "image/png",
+              "data": image,
             }
-          ]
-        }
-      };
+          },
+          {
+            "text": prompt,
+          }
+        ]
+      }
+    };
 
     debugPrint('...calling Gemini API');
 
@@ -148,7 +144,7 @@ class VertexAI {
       final res = await http.post(
         Uri.https(
           'us-central1-aiplatform.googleapis.com',
-          'v1/projects/next-tokyo-imagen-flutter-demo/locations/us-central1/publishers/google/models/gemini-1.5-pro-preview-0409:generateContent',
+          'v1/projects/next-tokyo-imagen-flutter-demo/locations/us-central1/publishers/google/models/gemini-1.5-flash-001:generateContent',
         ),
         headers: headers,
         body: jsonEncode(body),
