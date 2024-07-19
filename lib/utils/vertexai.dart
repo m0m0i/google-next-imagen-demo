@@ -1,5 +1,6 @@
 import "dart:async";
 import "dart:convert";
+import "dart:typed_data";
 
 import "package:flutter/material.dart";
 import "package:google_next_imagen_demo/models/imagen_resopnse.dart";
@@ -7,7 +8,7 @@ import "package:google_next_imagen_demo/utils/obtain_credentials.dart";
 import "package:http/http.dart" as http;
 
 class VertexAI {
-  FutureOr<ImagenResponse> generateImage(prompt) async {
+  FutureOr<ImagenResponse> generateImage(String prompt) async {
     final credentials = await obtainCredentials();
 
     Map<String, String> headers = {
@@ -18,15 +19,14 @@ class VertexAI {
     var body = {
       "instances": [
         {
-          "prompt": "$prompt",
+          "prompt": prompt,
         }
       ],
       "parameters": {
-        "sampleCount": 2,
+        "sampleCount": 1,
         "aspectRatio": "1:1",
         "outputOptions": {
           "mimeType": "image/png",
-          "compressionQuality": 80,
         },
       }
     };
@@ -47,15 +47,17 @@ class VertexAI {
 
         debugPrint('Succeeded to generate iamges');
         return imagenResponse;
+      } else {
+        debugPrint('Error: ${res.statusCode} - ${res.body}');
+        throw Exception('Failed to edit image');
       }
     } catch (e) {
-      throw Exception(e.toString());
+      debugPrint('Error editing image: $e');
+      throw Exception('Failed to edit image');
     }
-
-    throw Exception('Failed to generate images');
   }
 
-  FutureOr<ImagenResponse> editImage(prompt, image) async {
+  FutureOr<ImagenResponse> editImage(String prompt, Uint8List image) async {
     final credentials = await obtainCredentials();
 
     Map<String, String> headers = {
@@ -66,25 +68,34 @@ class VertexAI {
     var body = {
       "instances": [
         {
-          "prompt": "$prompt",
+          "prompt": prompt,
+          "image": {
+            "bytesBase64Encoded": base64Encode(image),
+          }
         }
       ],
       "parameters": {
-        "sampleCount": 2,
+        // "sampleCount": 1,
         "aspectRatio": "1:1",
+        "editConfig": {
+          // Comment out the following two lines when using the Product Image Editing mode
+          "editMode": "inpainting-insert",
+          "maskMode": {"maskType": "background"},
+          // Uncomment the following to use the Product Image Editing mode
+          // "editMode": "product-image",
+        },
         "outputOptions": {
           "mimeType": "image/png",
-          "compressionQuality": 80,
         },
       }
     };
 
-    debugPrint('...calling Imagen 3 API');
+    debugPrint('...calling Imagen 2 API');
     try {
       final res = await http.post(
         Uri.https(
           'us-central1-aiplatform.googleapis.com',
-          'v1/projects/next-tokyo-imagen-flutter-demo/locations/us-central1/publishers/google/models/imagen-3.0-generate-preview-0611:predict',
+          'v1/projects/next-tokyo-imagen-flutter-demo/locations/us-central1/publishers/google/models/imagegeneration@006:predict',
         ),
         headers: headers,
         body: jsonEncode(body),
@@ -95,11 +106,13 @@ class VertexAI {
 
         debugPrint('Succeeded to generate iamges');
         return imagenResponse;
+      } else {
+        debugPrint('Error: ${res.statusCode} - ${res.body}');
+        throw Exception('Failed to edit image');
       }
     } catch (e) {
-      throw Exception(e.toString());
+      debugPrint('Error editing image: $e');
+      throw Exception('Failed to edit image');
     }
-
-    throw Exception('Failed to generate images');
   }
 }
