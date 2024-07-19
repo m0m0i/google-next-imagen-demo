@@ -9,6 +9,7 @@ environment:
 dependencies:
   flutter:
     sdk: flutter
+  formatted_text: ^4.0.1
   googleapis_auth: ^1.6.0
   http: ^1.2.1
   image_picker: ^1.1.2
