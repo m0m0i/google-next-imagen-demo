@@ -2,6 +2,8 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
+import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
@@ -19,6 +21,9 @@ class _EditImageState extends State<EditImage> {
   late TextEditingController _textController;
 
   final vertexai = VertexAI();
+
+  bool visibleBool = false;
+
 
   @override
   void initState() {
@@ -49,23 +54,19 @@ class _EditImageState extends State<EditImage> {
   }
 
   Future<void> handleGenerate(String prompt) async {
+
+    setState(() {
+      visibleBool = true;
+    });
+    
     final generatedImage = await vertexai.editImage(prompt, imageToRender!);
 
     setState(() {
       imageToRender =
           base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
-    });
-  }
+      visibleBool = false;
 
-  Widget renderImage(image) {
-    if (image != null) {
-      return Image.memory(
-        image,
-        width: double.infinity,
-      );
-    } else {
-      return const Text("Try Imagen 2 image editing");
-    }
+    });
   }
 
   @override
@@ -74,13 +75,16 @@ class _EditImageState extends State<EditImage> {
       appBar: AppBar(
         title: const Text('イメージ編集'),
       ),
-      body: Center(
-        child: Column(
+      body: Stack(
+          clipBehavior: Clip.hardEdge, fit: StackFit.expand,
+          children:[
+            Center(
+          child: Column(
           mainAxisSize: MainAxisSize.min,
           children: [
             Padding(
               padding: const EdgeInsets.all(24),
-              child: renderImage(imageToRender),
+              child: renderImage(context, imageToRender, const Text("Try Imagen 2 image editing")),
             ),
             Padding(
               padding: const EdgeInsets.all(24),
@@ -119,6 +123,9 @@ class _EditImageState extends State<EditImage> {
             )
           ],
         ),
+      ),
+      OverlayProgressIndicator(visible: visibleBool)
+        ],
       ),
     );
   }
