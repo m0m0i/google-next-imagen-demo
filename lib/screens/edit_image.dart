@@ -24,7 +24,6 @@ class _EditImageState extends State<EditImage> {
 
   bool visibleBool = false;
 
-
   @override
   void initState() {
     super.initState();
@@ -54,79 +53,84 @@ class _EditImageState extends State<EditImage> {
   }
 
   Future<void> handleGenerate(String prompt) async {
-
     setState(() {
       visibleBool = true;
     });
-    
+
     final generatedImage = await vertexai.editImage(prompt, imageToRender!);
 
     setState(() {
       imageToRender =
           base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
       visibleBool = false;
-
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: const Text('イメージ編集'),
-      ),
-      body: Stack(
-          clipBehavior: Clip.hardEdge, fit: StackFit.expand,
-          children:[
-            Center(
-          child: Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: renderImage(context, imageToRender, const Text("Try Imagen 2 image editing")),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: TextField(
-                controller: _textController,
-                minLines: 1,
-                maxLines: 2,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    onPressed: () async {
-                      final prompt = _textController.value.text;
-                      if (prompt != "" && pickedImage != null) {
-                        await handleGenerate(prompt);
-                      }
-                    },
-                    icon: const Icon(Icons.send),
-                  ),
-                ),
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  MaterialButton(
-                    onPressed: _handlePickImageFromCamera,
-                    child: const Icon(Icons.photo_camera),
-                  ),
-                  MaterialButton(
-                    onPressed: _handlePickImageFromGallery,
-                    child: const Icon(Icons.folder),
-                  ),
-                ],
-              ),
-            )
-          ],
+        appBar: AppBar(
+          title: const Text('イメージ編集'),
         ),
-      ),
-      OverlayProgressIndicator(visible: visibleBool)
-        ],
-      ),
-    );
+        body: Builder(
+            builder: ((context) => SingleChildScrollView(
+                    child: SizedBox(
+                  height: MediaQuery.of(context).size.height -
+                      (Scaffold.of(context).appBarMaxHeight ?? 0),
+                  child: Stack(
+                    clipBehavior: Clip.hardEdge,
+                    fit: StackFit.expand,
+                    children: [
+                      Center(
+                        child: Column(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: renderImage(context, imageToRender,
+                                  const Text("Try Imagen 2 image editing")),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: TextField(
+                                controller: _textController,
+                                minLines: 1,
+                                maxLines: 2,
+                                decoration: InputDecoration(
+                                  suffixIcon: IconButton(
+                                    onPressed: () async {
+                                      final prompt = _textController.value.text;
+                                      if (prompt != "" && pickedImage != null) {
+                                        await handleGenerate(prompt);
+                                      }
+                                    },
+                                    icon: const Icon(Icons.send),
+                                  ),
+                                ),
+                              ),
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  MaterialButton(
+                                    onPressed: _handlePickImageFromCamera,
+                                    child: const Icon(Icons.photo_camera),
+                                  ),
+                                  MaterialButton(
+                                    onPressed: _handlePickImageFromGallery,
+                                    child: const Icon(Icons.folder),
+                                  ),
+                                ],
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                      OverlayProgressIndicator(visible: visibleBool)
+                    ],
+                  ),
+                )))));
   }
 }
