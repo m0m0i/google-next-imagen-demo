@@ -14,7 +14,7 @@ class GenerateImage extends StatefulWidget {
 }
 
 class _GenerateImageState extends State<GenerateImage> {
-  Uint8List? image ;
+  Uint8List? image;
   late TextEditingController _controller;
 
   final vertexai = VertexAI();
@@ -52,42 +52,50 @@ class _GenerateImageState extends State<GenerateImage> {
       appBar: AppBar(
         title: const Text('イメージ生成'),
       ),
-      body:Stack(
-          clipBehavior: Clip.hardEdge, fit: StackFit.expand,
-          children:[
-            Center(
-              child: 
-          Column(
-          mainAxisSize: MainAxisSize.min,
-          children: [
-            // renderImage(image),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: renderImage(context,image,const Text("Try Imagen 3 image generation")),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(24),
-              child: TextField(
-                controller: _controller,
-                minLines: 1,
-                maxLines: 2,
-                decoration: InputDecoration(
-                  suffixIcon: IconButton(
-                    onPressed: () async {
-                      final prompt = _controller.value.text;
-                      if (prompt != "") await handleGenerate(prompt);
-                    },
-                    icon: const Icon(Icons.send),
-                  ),
+      body: Builder(
+          builder: ((context) => SingleChildScrollView(
+                  child: SizedBox(
+                height: MediaQuery.of(context).size.height -
+                    (Scaffold.of(context).appBarMaxHeight ?? 0),
+                child: Stack(
+                  clipBehavior: Clip.hardEdge,
+                  fit: StackFit.expand,
+                  children: [
+                    Center(
+                      child: Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          // renderImage(image),
+                          Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: renderImage(context, image,
+                                const Text("Try Imagen 3 image generation")),
+                          ),
+                          Padding(
+                            padding: const EdgeInsets.all(24),
+                            child: TextField(
+                              controller: _controller,
+                              minLines: 1,
+                              maxLines: 2,
+                              decoration: InputDecoration(
+                                suffixIcon: IconButton(
+                                  onPressed: () async {
+                                    final prompt = _controller.value.text;
+                                    if (prompt != "")
+                                      await handleGenerate(prompt);
+                                  },
+                                  icon: const Icon(Icons.send),
+                                ),
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    OverlayProgressIndicator(visible: visibleBool)
+                  ],
                 ),
-              ),
-            ),
-          ],
-        ),
-            ),
-        OverlayProgressIndicator(visible: visibleBool)
-          ],
-        ),
+              )))),
     );
   }
 }
