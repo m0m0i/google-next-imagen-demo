@@ -57,7 +57,7 @@ class VertexAI {
         throw Exception('Failed to generate the image');
       }
     } catch (e) {
-      debugPrint('Error editing image: $e');
+      debugPrint('Error generate image: $e');
       throw Exception('Failed to generate the image');
     }
   }
@@ -107,7 +107,7 @@ class VertexAI {
         ImagenResponse imagenResponse =
             ImagenResponse.fromJson(jsonDecode(res.body));
 
-        debugPrint('Succeeded to generate iamges');
+        debugPrint('Succeeded to edit iamges');
         return imagenResponse;
       } else {
         debugPrint('Error: ${res.statusCode} - ${res.body}');

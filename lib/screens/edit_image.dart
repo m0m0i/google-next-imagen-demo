@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:google_next_imagen_demo/utils/error_dialog.dart';
 import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
 import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
@@ -52,18 +53,22 @@ class _EditImageState extends State<EditImage> {
     setState(() {});
   }
 
-  Future<void> handleGenerate(String prompt) async {
+  Future<void> handleGenerate(context, String prompt) async {
     setState(() {
       visibleBool = true;
     });
 
-    final generatedImage = await vertexai.editImage(prompt, imageToRender!);
-
-    setState(() {
+    try {
+      final generatedImage = await vertexai.editImage(prompt, imageToRender!);
       imageToRender =
           base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
-      visibleBool = false;
-    });
+    } catch (e) {
+      showErrorDialog(context, "リクエストに失敗しました");
+    } finally {
+      setState(() {
+        visibleBool = false;
+      });
+    }
   }
 
   @override
@@ -106,7 +111,7 @@ class _EditImageState extends State<EditImage> {
                                     onPressed: () async {
                                       final prompt = _textController.value.text;
                                       if (prompt != "" && pickedImage != null) {
-                                        await handleGenerate(prompt);
+                                        await handleGenerate(context, prompt);
                                       }
                                     },
                                     icon: const Icon(Icons.send),
