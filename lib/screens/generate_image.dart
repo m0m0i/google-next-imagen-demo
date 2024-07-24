@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:google_next_imagen_demo/utils/error_dialog.dart';
 import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
 import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
@@ -33,17 +34,21 @@ class _GenerateImageState extends State<GenerateImage> {
     super.dispose();
   }
 
-  Future<void> handleGenerate(prompt) async {
+  Future<void> handleGenerate(context, prompt) async {
     setState(() {
       visibleBool = true;
     });
 
-    final generatedImage = await vertexai.generateImage(prompt);
-
-    setState(() {
+    try {
+      final generatedImage = await vertexai.generateImage(prompt);
       image = base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
-      visibleBool = false;
-    });
+    } catch (e) {
+      showErrorDialog(context, "リクエストに失敗しました");
+    } finally {
+      setState(() {
+        visibleBool = false;
+      });
+    }
   }
 
   @override
@@ -81,8 +86,9 @@ class _GenerateImageState extends State<GenerateImage> {
                                 suffixIcon: IconButton(
                                   onPressed: () async {
                                     final prompt = _controller.value.text;
-                                    if (prompt != "")
-                                      await handleGenerate(prompt);
+                                    if (prompt != "") {
+                                      await handleGenerate(context, prompt);
+                                    }
                                   },
                                   icon: const Icon(Icons.send),
                                 ),

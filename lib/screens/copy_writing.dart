@@ -3,6 +3,7 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:formatted_text/formatted_text.dart';
+import 'package:google_next_imagen_demo/utils/error_dialog.dart';
 import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
 import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
@@ -63,14 +64,18 @@ class _CopyWritingState extends State<CopyWriting> {
       visibleBool = true;
     });
 
-    var copywriteResponse = await vertexai.copyWriting(prompt, imageToSend);
-    debugPrint(copywriteResponse.candidates[0].content.parts[0].text);
-
-    setState(() {
+    try {
+      var copywriteResponse = await vertexai.copyWriting(prompt, imageToSend);
+      debugPrint(copywriteResponse.candidates[0].content.parts[0].text);
       _textController.text =
           copywriteResponse.candidates[0].content.parts[0].text;
-      visibleBool = false;
-    });
+    } catch (e) {
+      showErrorDialog(context, "リクエストに失敗しました");
+    } finally {
+      setState(() {
+        visibleBool = false;
+      });
+    }
   }
 
   @override
