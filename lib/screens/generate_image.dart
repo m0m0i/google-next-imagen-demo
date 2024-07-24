@@ -65,11 +65,11 @@ class _GenerateImageState extends State<GenerateImage> {
                       child: Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          // renderImage(image),
                           Padding(
                             padding: const EdgeInsets.all(24),
-                            child: renderImage(context, image,
-                                const Text("Try Imagen 3 image generation")),
+                            child: image != null
+                                ? CustomImageWidget(context, imageData: image!)
+                                : const Text("Try Imagen 3 image generation"),
                           ),
                           Padding(
                             padding: const EdgeInsets.all(24),
