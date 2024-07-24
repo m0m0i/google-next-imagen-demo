@@ -94,8 +94,10 @@ class _CopyWritingState extends State<CopyWriting> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(24),
-                              child: renderImage(context, imageToRender,
-                                  const Text("Try Gemini Copywriting")),
+                              child: imageToRender != null
+                                  ? CustomImageWidget(context,
+                                      imageData: imageToRender!)
+                                  : const Text("Try Gemini Copywriting"),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(24),

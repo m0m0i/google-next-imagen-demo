@@ -87,8 +87,13 @@ class _EditImageState extends State<EditImage> {
                           children: [
                             Padding(
                               padding: const EdgeInsets.all(24),
-                              child: renderImage(context, imageToRender,
-                                  const Text("Try Imagen 2 image editing")),
+                              child: Padding(
+                                padding: const EdgeInsets.all(24),
+                                child: imageToRender != null
+                                    ? CustomImageWidget(context,
+                                        imageData: imageToRender!)
+                                    : const Text("Try Imagen 2 image editing"),
+                              ),
                             ),
                             Padding(
                               padding: const EdgeInsets.all(24),
