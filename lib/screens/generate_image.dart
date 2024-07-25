@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:google_next_imagen_demo/utils/error_dialog.dart';
 import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
 import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
@@ -58,50 +59,59 @@ class _GenerateImageState extends State<GenerateImage> {
         title: const Text('イメージ生成'),
       ),
       body: Builder(
-          builder: ((context) => SingleChildScrollView(
-                  child: SizedBox(
-                height: MediaQuery.of(context).size.height -
-                    (Scaffold.of(context).appBarMaxHeight ?? 0),
-                child: Stack(
-                  clipBehavior: Clip.hardEdge,
-                  fit: StackFit.expand,
+          builder: ((context) => Stack(children: [
+                Column(
                   children: [
-                    Center(
-                      child: Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: image != null
-                                ? CustomImageWidget(context, imageData: image!)
-                                : const Text("Try Imagen 3 image generation"),
-                          ),
-                          Padding(
-                            padding: const EdgeInsets.all(24),
-                            child: TextField(
-                              controller: _controller,
-                              minLines: 1,
-                              maxLines: 2,
-                              decoration: InputDecoration(
-                                suffixIcon: IconButton(
-                                  onPressed: () async {
-                                    final prompt = _controller.value.text;
-                                    if (prompt != "") {
-                                      await handleGenerate(context, prompt);
-                                    }
-                                  },
-                                  icon: const Icon(Icons.send),
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Padding(
+                                padding: const EdgeInsets.all(24),
+                                child: image != null
+                                    ? CustomImageWidget(context,
+                                        imageData: image!)
+                                    : const Text(
+                                        "Try Imagen 3 image generation"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(24),
+                                child: TextField(
+                                  controller: _controller,
+                                  minLines: 1,
+                                  maxLines: 2,
+                                  decoration: InputDecoration(
+                                    suffixIcon: IconButton(
+                                      onPressed: () async {
+                                        final prompt = _controller.value.text;
+                                        if (prompt != "") {
+                                          await handleGenerate(context, prompt);
+                                        }
+                                      },
+                                      icon: const Icon(Icons.send),
+                                    ),
+                                  ),
                                 ),
                               ),
-                            ),
+                            ],
                           ),
-                        ],
+                        ),
                       ),
                     ),
-                    OverlayProgressIndicator(visible: visibleBool)
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SizedBox(
+                        height: 18,
+                        child: Image.asset('images/logo_s.png'),
+                      ),
+                    )
                   ],
                 ),
-              )))),
+                OverlayProgressIndicator(visible: visibleBool)
+              ]))),
     );
   }
 }
+

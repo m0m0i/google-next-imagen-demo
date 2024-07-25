@@ -74,73 +74,84 @@ class _EditImageState extends State<EditImage> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('イメージ編集'),
-        ),
-        body: Builder(
-            builder: ((context) => SingleChildScrollView(
-                    child: SizedBox(
-                  height: MediaQuery.of(context).size.height -
-                      (Scaffold.of(context).appBarMaxHeight ?? 0),
-                  child: Stack(
-                    clipBehavior: Clip.hardEdge,
-                    fit: StackFit.expand,
-                    children: [
-                      Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Padding(
+      appBar: AppBar(
+        title: const Text('イメージ編集'),
+      ),
+      body: Builder(
+          builder: ((context) => Stack(children: [
+                Column(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Padding(
                                 padding: const EdgeInsets.all(24),
-                                child: imageToRender != null
-                                    ? CustomImageWidget(context,
-                                        imageData: imageToRender!)
-                                    : const Text("Try Imagen 2 image editing"),
+                                child: Padding(
+                                  padding: const EdgeInsets.all(24),
+                                  child: imageToRender != null
+                                      ? CustomImageWidget(context,
+                                          imageData: imageToRender!)
+                                      : const Text(
+                                          "Try Imagen 2 image editing"),
+                                ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: TextField(
-                                controller: _textController,
-                                minLines: 1,
-                                maxLines: 2,
-                                decoration: InputDecoration(
-                                  suffixIcon: IconButton(
-                                    onPressed: () async {
-                                      final prompt = _textController.value.text;
-                                      if (prompt != "" && pickedImage != null) {
-                                        await handleGenerate(context, prompt);
-                                      }
-                                    },
-                                    icon: const Icon(Icons.send),
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: TextField(
+                                  controller: _textController,
+                                  minLines: 1,
+                                  maxLines: 2,
+                                  decoration: InputDecoration(
+                                    suffixIcon: IconButton(
+                                      onPressed: () async {
+                                        final prompt =
+                                            _textController.value.text;
+                                        if (prompt != "" &&
+                                            pickedImage != null) {
+                                          await handleGenerate(context, prompt);
+                                        }
+                                      },
+                                      icon: const Icon(Icons.send),
+                                    ),
                                   ),
                                 ),
                               ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  MaterialButton(
-                                    onPressed: _handlePickImageFromCamera,
-                                    child: const Icon(Icons.photo_camera),
-                                  ),
-                                  MaterialButton(
-                                    onPressed: _handlePickImageFromGallery,
-                                    child: const Icon(Icons.folder),
-                                  ),
-                                ],
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    MaterialButton(
+                                      onPressed: _handlePickImageFromCamera,
+                                      child: const Icon(Icons.photo_camera),
+                                    ),
+                                    MaterialButton(
+                                      onPressed: _handlePickImageFromGallery,
+                                      child: const Icon(Icons.folder),
+                                    ),
+                                  ],
+                                ),
                               ),
-                            )
-                          ],
+                            ],
+                          ),
                         ),
                       ),
-                      OverlayProgressIndicator(visible: visibleBool)
-                    ],
-                  ),
-                )))));
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SizedBox(
+                        height: 18,
+                        child: Image.asset('images/logo_s.png'),
+                      ),
+                    )
+                  ],
+                ),
+                OverlayProgressIndicator(visible: visibleBool)
+              ]))),
+    );
   }
 }
+

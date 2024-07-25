@@ -13,12 +13,10 @@ class OverlayProgressIndicator extends StatelessWidget {
             decoration: const BoxDecoration(
               color: Color.fromRGBO(0, 0, 0, 0.3),
             ),
-            child: const Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: <Widget>[
+            child: const Center(
+              child: 
                 CircularProgressIndicator(
                     valueColor: AlwaysStoppedAnimation<Color>(Colors.white))
-              ],
             ),
           )
         : Container();

@@ -58,7 +58,7 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
               icon: Icon(Icons.image), label: 'Generate Image'),
           BottomNavigationBarItem(icon: Icon(Icons.edit), label: 'Image Edit'),
           BottomNavigationBarItem(
-              icon: Icon(Icons.chat), label: 'Copy Writing'),
+              icon: Icon(Icons.chat), label: 'Copywriting'),
         ],
         type: BottomNavigationBarType.fixed,
       ),
