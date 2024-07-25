@@ -25,6 +25,8 @@ class _EditImageState extends State<EditImage> {
 
   bool visibleBool = false;
 
+  bool sendButtonActive = true;
+
   @override
   void initState() {
     super.initState();
@@ -55,6 +57,12 @@ class _EditImageState extends State<EditImage> {
 
   Future<void> handleGenerate(context, String prompt) async {
     setState(() {
+      sendButtonActive = false;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 450));
+
+    setState(() {
       visibleBool = true;
     });
 
@@ -66,6 +74,7 @@ class _EditImageState extends State<EditImage> {
       showErrorDialog(context, "リクエストに失敗しました");
     } finally {
       setState(() {
+        sendButtonActive = true;
         visibleBool = false;
       });
     }
@@ -106,14 +115,17 @@ class _EditImageState extends State<EditImage> {
                                   maxLines: 2,
                                   decoration: InputDecoration(
                                     suffixIcon: IconButton(
-                                      onPressed: () async {
-                                        final prompt =
-                                            _textController.value.text;
-                                        if (prompt != "" &&
-                                            pickedImage != null) {
-                                          await handleGenerate(context, prompt);
-                                        }
-                                      },
+                                      onPressed: (sendButtonActive)
+                                          ? () async {
+                                              final prompt =
+                                                  _textController.value.text;
+                                              if (prompt != "" &&
+                                                  pickedImage != null) {
+                                                await handleGenerate(
+                                                    context, prompt);
+                                              }
+                                            }
+                                          : null,
                                       icon: const Icon(Icons.send),
                                     ),
                                   ),
@@ -154,4 +166,3 @@ class _EditImageState extends State<EditImage> {
     );
   }
 }
-

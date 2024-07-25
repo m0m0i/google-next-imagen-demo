@@ -24,6 +24,8 @@ class _CopyWritingState extends State<CopyWriting> {
 
   bool visibleBool = false;
 
+  bool sendButtonActive = true;
+
   String prompt =
       "あなたは世界で最も優秀な広告マーケターです。添付の画像に対する商品の広告文を提案してください。回答は200文字以内でタイトルと広告文を返してください。なお、タイトルは太字にしてください。";
 
@@ -61,6 +63,12 @@ class _CopyWritingState extends State<CopyWriting> {
     String imageToSend = base64Encode(imageToRender!.toList());
 
     setState(() {
+      sendButtonActive = false;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 450));
+
+    setState(() {
       visibleBool = true;
     });
 
@@ -73,6 +81,7 @@ class _CopyWritingState extends State<CopyWriting> {
       showErrorDialog(context, "リクエストに失敗しました");
     } finally {
       setState(() {
+        sendButtonActive = true;
         visibleBool = false;
       });
     }
@@ -115,7 +124,11 @@ class _CopyWritingState extends State<CopyWriting> {
                                       child: const Icon(Icons.folder),
                                     ),
                                     MaterialButton(
-                                      onPressed: _handleGenerate,
+                                      onPressed: (sendButtonActive)
+                                          ? () async {
+                                              _handleGenerate();
+                                            }
+                                          : null,
                                       child: const Icon(Icons.send),
                                     ),
                                   ],

@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:google_next_imagen_demo/utils/error_dialog.dart';
 import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
 import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
@@ -23,6 +22,8 @@ class _GenerateImageState extends State<GenerateImage> {
 
   bool visibleBool = false;
 
+  bool sendButtonActive = true;
+
   @override
   void initState() {
     super.initState();
@@ -37,6 +38,12 @@ class _GenerateImageState extends State<GenerateImage> {
 
   Future<void> handleGenerate(context, prompt) async {
     setState(() {
+      sendButtonActive = false;
+    });
+
+    await Future.delayed(const Duration(milliseconds: 450));
+
+    setState(() {
       visibleBool = true;
     });
 
@@ -47,6 +54,7 @@ class _GenerateImageState extends State<GenerateImage> {
       showErrorDialog(context, "リクエストに失敗しました");
     } finally {
       setState(() {
+        sendButtonActive = true;
         visibleBool = false;
       });
     }
@@ -84,12 +92,16 @@ class _GenerateImageState extends State<GenerateImage> {
                                   maxLines: 2,
                                   decoration: InputDecoration(
                                     suffixIcon: IconButton(
-                                      onPressed: () async {
-                                        final prompt = _controller.value.text;
-                                        if (prompt != "") {
-                                          await handleGenerate(context, prompt);
-                                        }
-                                      },
+                                      onPressed: (sendButtonActive)
+                                          ? () async {
+                                              final prompt =
+                                                  _controller.value.text;
+                                              if (prompt != "") {
+                                                await handleGenerate(
+                                                    context, prompt);
+                                              }
+                                            }
+                                          : null,
                                       icon: const Icon(Icons.send),
                                     ),
                                   ),
@@ -114,4 +126,3 @@ class _GenerateImageState extends State<GenerateImage> {
     );
   }
 }
-
