@@ -95,6 +95,9 @@ class _GenerateImageState extends State<GenerateImage> {
                               ),
                             ),
                           ),
+                          Padding(
+                              padding: const EdgeInsets.all(24),
+                              child: Image.asset('images/logo_s.png'))
                         ],
                       ),
                     ),
