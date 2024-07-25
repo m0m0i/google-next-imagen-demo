@@ -81,72 +81,76 @@ class _CopyWritingState extends State<CopyWriting> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBar(
-          title: const Text('コピーライティング'),
-        ),
-        body: Builder(
-            builder: ((context) => SingleChildScrollView(
-                    child: SizedBox(
-                  height: MediaQuery.of(context).size.height -
-                      (Scaffold.of(context).appBarMaxHeight ?? 0),
-                  child: Stack(
-                    clipBehavior: Clip.hardEdge,
-                    fit: StackFit.expand,
-                    children: [
-                      Center(
-                        child: Column(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: imageToRender != null
-                                  ? CustomImageWidget(context,
-                                      imageData: imageToRender!)
-                                  : const Text("Try Gemini Copywriting"),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  MaterialButton(
-                                    onPressed: _handlePickImageFromCamera,
-                                    child: const Icon(Icons.photo_camera),
-                                  ),
-                                  MaterialButton(
-                                    onPressed: _handlePickImageFromGallery,
-                                    child: const Icon(Icons.folder),
-                                  ),
-                                  MaterialButton(
-                                    onPressed: _handleGenerate,
-                                    child: const Icon(Icons.send),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Padding(
-                              padding: const EdgeInsets.all(24),
-                              child: FormattedText(
-                                _textController.text,
-                                formatters: const [
-                                  ...FormattedTextDefaults
-                                      .formattedTextDefaultFormatters,
-                                  FormattedTextFormatter(
-                                      patternChars: '**',
-                                      style: TextStyle(
-                                          fontWeight: FontWeight.bold))
-                                ],
-                              ),
-                            ),
-                            Padding(
+      appBar: AppBar(
+        title: const Text('コピーライティング'),
+      ),
+      body: Builder(
+          builder: ((context) => Stack(children: [
+                Column(
+                  children: [
+                    Expanded(
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: SingleChildScrollView(
+                          child: Column(
+                            children: [
+                              Padding(
                                 padding: const EdgeInsets.all(24),
-                                child: Image.asset('images/logo_s.png'))
-                          ],
+                                child: imageToRender != null
+                                    ? CustomImageWidget(context,
+                                        imageData: imageToRender!)
+                                    : const Text("Try Gemini Copywriting"),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  children: [
+                                    MaterialButton(
+                                      onPressed: _handlePickImageFromCamera,
+                                      child: const Icon(Icons.photo_camera),
+                                    ),
+                                    MaterialButton(
+                                      onPressed: _handlePickImageFromGallery,
+                                      child: const Icon(Icons.folder),
+                                    ),
+                                    MaterialButton(
+                                      onPressed: _handleGenerate,
+                                      child: const Icon(Icons.send),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                              Padding(
+                                padding: const EdgeInsets.all(12),
+                                child: FormattedText(
+                                  _textController.text,
+                                  formatters: const [
+                                    ...FormattedTextDefaults
+                                        .formattedTextDefaultFormatters,
+                                    FormattedTextFormatter(
+                                        patternChars: '**',
+                                        style: TextStyle(
+                                            fontWeight: FontWeight.bold))
+                                  ],
+                                ),
+                              )
+                            ],
+                          ),
                         ),
                       ),
-                      OverlayProgressIndicator(visible: visibleBool)
-                    ],
-                  ),
-                )))));
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.all(16),
+                      child: SizedBox(
+                        height: 18,
+                        child: Image.asset('images/logo_s.png'),
+                      ),
+                    )
+                  ],
+                ),
+                OverlayProgressIndicator(visible: visibleBool)
+              ]))),
+    );
   }
 }
