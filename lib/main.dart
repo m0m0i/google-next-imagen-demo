@@ -2,11 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:google_next_imagen_demo/screens/copy_writing.dart';
 import 'package:google_next_imagen_demo/screens/edit_image.dart';
 import 'screens/generate_image.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'firebase_options.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 // 一瞬文字化けするのは日本語のせい
 // https://gaprot.jp/2022/03/28/flutter_dev_bugfix_text/
 
-void main() {
+
+
+void main() async {
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
+
+  await FirebaseAnalytics.instance.logEvent(
+    name: 'App login',
+  );
+
   runApp(const MainApp());
 }
 

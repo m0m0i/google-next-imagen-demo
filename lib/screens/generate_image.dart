@@ -6,6 +6,7 @@ import 'package:google_next_imagen_demo/utils/error_dialog.dart';
 import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
 import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class GenerateImage extends StatefulWidget {
   const GenerateImage({super.key});
@@ -41,6 +42,9 @@ class _GenerateImageState extends State<GenerateImage> {
       sendButtonActive = false;
     });
 
+    await FirebaseAnalytics.instance
+        .logEvent(name: 'Generate image', parameters: {"propmt": prompt});
+
     await Future.delayed(const Duration(milliseconds: 450));
 
     setState(() {
@@ -51,6 +55,9 @@ class _GenerateImageState extends State<GenerateImage> {
       final generatedImage = await vertexai.generateImage(prompt);
       image = base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
     } catch (e) {
+      await FirebaseAnalytics.instance.logEvent(
+          name: 'Generate image failed',
+          parameters: {"propmt": prompt, "error": "$e"});
       showErrorDialog(context, "リクエストに失敗しました");
     } finally {
       setState(() {
