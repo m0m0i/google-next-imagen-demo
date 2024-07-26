@@ -5,7 +5,6 @@ import 'package:flutter/material.dart';
 import 'package:formatted_text/formatted_text.dart';
 import 'package:google_next_imagen_demo/utils/error_dialog.dart';
 import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
-import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
@@ -87,6 +86,16 @@ class _CopyWritingState extends State<CopyWriting> {
     }
   }
 
+  Widget imageWidget(context) {
+    final screenSize = MediaQuery.of(context).size;
+    final imageSize = screenSize.shortestSide * 0.7;
+    return SizedBox(
+      width: imageSize,
+      height: imageSize,
+      child: Image.memory(imageToRender!),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,8 +115,7 @@ class _CopyWritingState extends State<CopyWriting> {
                               Padding(
                                 padding: const EdgeInsets.all(24),
                                 child: imageToRender != null
-                                    ? CustomImageWidget(context,
-                                        imageData: imageToRender!)
+                                    ? imageWidget(context)
                                     : const Text("Try Gemini Copywriting"),
                               ),
                               Padding(
