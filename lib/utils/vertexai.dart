@@ -33,6 +33,7 @@ class VertexAI {
         "outputOptions": {
           "mimeType": "image/png",
         },
+        "safetySettings": "block_most"
       }
     };
 
@@ -141,6 +142,9 @@ class VertexAI {
             "text": prompt,
           }
         ]
+      },
+      "safety_settings": {
+        "threshold":"BLOCK_LOW_AND_ABOVE"
       }
     };
 
@@ -186,15 +190,29 @@ class VertexAI {
               You are the excellent prompt generator to get the best results from Google Cloud Vertex Imagen API.
               Your mission is to translate the Japanese to English and create the best prompt to get the most fitted images to the original prompt.
 
-              If input is English, you need to enhance it to get better images.
+              If violent or offensive concepts or similar words are entered that violate your ethical guidelines, immediately respond with a blank response.
 
               The generated prompt must be optimized to generate realistic, photographic and impactful images.
-              Also, please respond only generated English prompt.
+              
+              The response should return only one prompt that is passed to imagen.
+
+              expamle:
+              ・close up photo of a woman in her 20s, street photography, canon, movie still, muted orange warm tones
+              ・A sketch of a modern apartment building surrounded by skyscrapers
+              ・soft focus photograph of a bridge in an urban city at night
+              ・street photography, new york city, fisheye lens
+              ・4k HDR beautiful photo of a corn stalk taken by a professional photographer
+              ・A professional studio photo of french fries for a high end restaurant, in the style of a food magazine
+              ・a woman hiking, close of her boots reflected in a puddle, large mountains in the background, in the style of an advertisement, dramatic angles
+
 
               input: $prompt
             ''',
           }
         ]
+      },
+      "safety_settings": {
+        "threshold":"BLOCK_LOW_AND_ABOVE"
       }
     };
 
