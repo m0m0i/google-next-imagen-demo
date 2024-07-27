@@ -53,13 +53,13 @@ class DefaultFirebaseOptions {
   }
 
   static const FirebaseOptions web = FirebaseOptions(
-    apiKey: 'AIzaSyCj69i8rzeDGXNKPYp_TuyB__EiOM22FjM',
-    appId: '1:311815547083:web:d6b47e46e70cfda3e2934e',
-    messagingSenderId: '311815547083',
-    projectId: 'stg-next-tokyo-imagen-flutter',
-    authDomain: 'stg-next-tokyo-imagen-flutter.firebaseapp.com',
-    storageBucket: 'stg-next-tokyo-imagen-flutter.appspot.com',
-    measurementId: 'G-HTV5WJQF5R',
+    apiKey: 'AIzaSyAYwXsHHHsnSQktGUAXLaOn_4snZHENUBg',
+    appId: '1:609247539369:web:e9397a14a498e3d6a939b8',
+    messagingSenderId: '609247539369',
+    projectId: 'next-tokyo-imagen-flutter-demo',
+    authDomain: 'next-tokyo-imagen-flutter-demo.firebaseapp.com',
+    storageBucket: 'next-tokyo-imagen-flutter-demo.appspot.com',
+    measurementId: 'G-RCR8DLRNVR',
   );
 
 }
