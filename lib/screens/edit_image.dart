@@ -8,6 +8,7 @@ import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class EditImage extends StatefulWidget {
   const EditImage({super.key});
@@ -60,6 +61,9 @@ class _EditImageState extends State<EditImage> {
       sendButtonActive = false;
     });
 
+    await FirebaseAnalytics.instance
+        .logEvent(name: 'Edit image', parameters: {"propmt": prompt});
+
     await Future.delayed(const Duration(milliseconds: 450));
 
     setState(() {
@@ -71,6 +75,10 @@ class _EditImageState extends State<EditImage> {
       imageToRender =
           base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
     } catch (e) {
+      await FirebaseAnalytics.instance.logEvent(
+          name: 'Edit image failed',
+          parameters: {"propmt": prompt, "error": "$e"});
+
       showErrorDialog(context, "リクエストに失敗しました");
     } finally {
       setState(() {

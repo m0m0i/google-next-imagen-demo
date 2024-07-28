@@ -8,6 +8,7 @@ import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
+import 'package:firebase_analytics/firebase_analytics.dart';
 
 class CopyWriting extends StatefulWidget {
   const CopyWriting({super.key});
@@ -65,6 +66,10 @@ class _CopyWritingState extends State<CopyWriting> {
       sendButtonActive = false;
     });
 
+    await FirebaseAnalytics.instance.logEvent(
+      name: 'Copyriting',
+    );
+
     await Future.delayed(const Duration(milliseconds: 450));
 
     setState(() {
@@ -77,6 +82,8 @@ class _CopyWritingState extends State<CopyWriting> {
       _textController.text =
           copywriteResponse.candidates[0].content.parts[0].text;
     } catch (e) {
+      await FirebaseAnalytics.instance
+          .logEvent(name: 'Copyriting Failed', parameters: {"error": "$e"});
       showErrorDialog(context, "リクエストに失敗しました");
     } finally {
       setState(() {
