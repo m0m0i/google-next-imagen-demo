@@ -42,7 +42,7 @@ class VertexAI {
       final res = await http.post(
         Uri.https(
           'us-central1-aiplatform.googleapis.com',
-          'v1/projects/next-tokyo-imagen-flutter-demo/locations/us-central1/publishers/google/models/imagen-3.0-generate-preview-0611:predict',
+          'v1/projects/next-tokyo-imagen-flutter-demo/locations/us-central1/publishers/google/models/imagen-3.0-fast-generate-preview-0611:predict',
         ),
         headers: headers,
         body: jsonEncode(body),
@@ -143,9 +143,7 @@ class VertexAI {
           }
         ]
       },
-      "safety_settings": {
-        "threshold":"BLOCK_LOW_AND_ABOVE"
-      }
+      "safety_settings": {"threshold": "BLOCK_LOW_AND_ABOVE"}
     };
 
     debugPrint('...calling Gemini 1.5 Flash to get the copy');
@@ -211,9 +209,7 @@ class VertexAI {
           }
         ]
       },
-      "safety_settings": {
-        "threshold":"BLOCK_LOW_AND_ABOVE"
-      }
+      "safety_settings": {"threshold": "BLOCK_LOW_AND_ABOVE"}
     };
 
     debugPrint('...calling Gemini 1.5 Flash to enhance the prompt');
