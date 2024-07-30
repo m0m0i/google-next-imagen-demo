@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'dart:typed_data';
+import 'dart:math';
 
 import 'package:flutter/material.dart';
 import 'package:google_next_imagen_demo/utils/error_dialog.dart';
@@ -17,7 +18,9 @@ class GenerateImage extends StatefulWidget {
 
 class _GenerateImageState extends State<GenerateImage> {
   Uint8List? image;
-  late TextEditingController _controller;
+  late TextEditingController textController;
+  String sampleText = "";
+  String sampleTextLabel = "";
 
   final vertexai = VertexAI();
 
@@ -28,12 +31,12 @@ class _GenerateImageState extends State<GenerateImage> {
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController();
+    textController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _controller.dispose();
+    textController.dispose();
     super.dispose();
   }
 
@@ -67,6 +70,43 @@ class _GenerateImageState extends State<GenerateImage> {
     }
   }
 
+  Widget generateSampleText() {
+    Random random = Random();
+
+    List<String> sampleTextList = [
+      "「Next Toyko」と書かれた青いビン、晴れた砂浜、ポートレート",
+      "ふわふわの可愛いコアラ、眠っている、森の背景、プロカメラマンの写真",
+      "上から見た本、一番上の本には水彩の鳥のイラスト、本には「VertexAI」と書かれている",
+      "パスタディナーの頭上からの撮影、フード雑誌の表紙スタイルのスタジオ写真",
+      "モダンなアームチェア、スタジオ写真、ドラマチックな照明",
+      "水たまりに映る登山用リュックサック、背景に大きな山、ドラマチックなアングル",
+    ];
+
+    sampleText = sampleTextList[random.nextInt(sampleTextList.length)];
+    sampleTextLabel = "例：$sampleText";
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        )),
+        onPressed: () {
+          textController.text = sampleText;
+        },
+        child: Text(
+          sampleTextLabel,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -91,18 +131,19 @@ class _GenerateImageState extends State<GenerateImage> {
                                     : const Text(
                                         "Try Imagen 3 image generation"),
                               ),
+                              generateSampleText(),
                               Padding(
                                 padding: const EdgeInsets.all(24),
                                 child: TextField(
-                                  controller: _controller,
+                                  controller: textController,
                                   minLines: 1,
-                                  maxLines: 2,
+                                  maxLines: 1,
                                   decoration: InputDecoration(
                                     suffixIcon: IconButton(
                                       onPressed: (sendButtonActive)
                                           ? () async {
                                               final prompt =
-                                                  _controller.value.text;
+                                                  textController.value.text;
                                               if (prompt != "") {
                                                 await handleGenerate(
                                                     context, prompt);

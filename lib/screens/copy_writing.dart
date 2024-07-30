@@ -126,7 +126,7 @@ class _CopyWritingState extends State<CopyWriting> {
                                     : const Text("Try Gemini Copywriting"),
                               ),
                               Padding(
-                                padding: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.all(24),
                                 child: Row(
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [

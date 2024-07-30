@@ -9,8 +9,6 @@ import 'package:firebase_analytics/firebase_analytics.dart';
 // 一瞬文字化けするのは日本語のせい
 // https://gaprot.jp/2022/03/28/flutter_dev_bugfix_text/
 
-
-
 void main() async {
   await Firebase.initializeApp(
     options: DefaultFirebaseOptions.currentPlatform,
@@ -70,8 +68,7 @@ class _HomeStatefulWidgetState extends State<HomeStatefulWidget> {
           BottomNavigationBarItem(
               icon: Icon(Icons.image), label: 'Generate Image'),
           BottomNavigationBarItem(icon: Icon(Icons.edit), label: 'Image Edit'),
-          BottomNavigationBarItem(
-              icon: Icon(Icons.chat), label: 'Copywriting'),
+          BottomNavigationBarItem(icon: Icon(Icons.chat), label: 'Copywriting'),
         ],
         type: BottomNavigationBarType.fixed,
       ),
