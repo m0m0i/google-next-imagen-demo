@@ -28,7 +28,7 @@ class VertexAI {
         }
       ],
       "parameters": {
-        "sampleCount": 1,
+        "sampleCount": 4,
         "aspectRatio": "1:1",
         "outputOptions": {
           "mimeType": "image/png",
@@ -81,7 +81,7 @@ class VertexAI {
         }
       ],
       "parameters": {
-        "sampleCount": 1,
+        "sampleCount": 4,
         "aspectRatio": "1:1",
         "editConfig": {
           "editMode": "product-image",

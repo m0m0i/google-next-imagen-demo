@@ -18,6 +18,9 @@ class GenerateImage extends StatefulWidget {
 
 class _GenerateImageState extends State<GenerateImage> {
   Uint8List? image;
+  Uint8List? image2;
+  Uint8List? image3;
+  Uint8List? image4;
   late TextEditingController textController;
   String sampleText = "";
   String sampleTextLabel = "";
@@ -57,6 +60,9 @@ class _GenerateImageState extends State<GenerateImage> {
     try {
       final generatedImage = await vertexai.generateImage(prompt);
       image = base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
+      image2 = base64Decode(generatedImage.predictions[1].bytesBase64Encoded);
+      image3 = base64Decode(generatedImage.predictions[2].bytesBase64Encoded);
+      image4 = base64Decode(generatedImage.predictions[3].bytesBase64Encoded);
     } catch (e) {
       await FirebaseAnalytics.instance.logEvent(
           name: 'Generate image failed',
@@ -109,6 +115,12 @@ class _GenerateImageState extends State<GenerateImage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final imageSize = screenSize.shortestSide * 0.7;
+    final longImageSize = screenSize.longestSide * 0.9;
+    var mainWidthSize =
+        screenSize.width > screenSize.height ? longImageSize : imageSize;
+
     return Scaffold(
       appBar: AppBar(
         title: const Text('イメージ生成'),
@@ -126,8 +138,52 @@ class _GenerateImageState extends State<GenerateImage> {
                               Padding(
                                 padding: const EdgeInsets.all(24),
                                 child: image != null
-                                    ? CustomImageWidget(context,
-                                        imageData: image!)
+                                    ? SizedBox(
+                                        width: mainWidthSize,
+                                        height: imageSize,
+                                        child: SingleChildScrollView(
+                                            //スクロール
+                                            scrollDirection:
+                                                Axis.horizontal, //スクロールの方向、水平
+                                            child: Row(children: [
+                                              SizedBox(
+                                                width: imageSize * 0.8,
+                                                height: imageSize * 0.8,
+                                                child: CustomImageWidget(
+                                                    context,
+                                                    imageData: image!),
+                                              ),
+                                              const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 24)),
+                                              SizedBox(
+                                                width: imageSize * 0.8,
+                                                height: imageSize * 0.8,
+                                                child: CustomImageWidget(
+                                                    context,
+                                                    imageData: image2!),
+                                              ),
+                                              const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 24)),
+                                              SizedBox(
+                                                width: imageSize * 0.8,
+                                                height: imageSize * 0.8,
+                                                child: CustomImageWidget(
+                                                    context,
+                                                    imageData: image3!),
+                                              ),
+                                              const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 24)),
+                                              SizedBox(
+                                                width: imageSize * 0.8,
+                                                height: imageSize * 0.8,
+                                                child: CustomImageWidget(
+                                                    context,
+                                                    imageData: image4!),
+                                              )
+                                            ])))
                                     : const Text(
                                         "Try Imagen 3 image generation"),
                               ),
