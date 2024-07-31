@@ -1,8 +1,8 @@
 import 'dart:convert';
 import 'dart:typed_data';
-import 'dart:html' as html;
+import 'package:web/web.dart' as web;
 import 'package:flutter/foundation.dart';
-import 'dart:ui' as ui;
+import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -21,9 +21,10 @@ class CustomImageWidget extends StatelessWidget {
     final imageSize = screenSize.shortestSide * 0.7;
 
     // Create a DOM element with the img tag
-    final html.ImageElement imageElement = html.ImageElement(src: imageUrl)
+    final web.HTMLImageElement imageElement = web.HTMLImageElement()
       ..style.width = '100%'
       ..style.height = 'auto';
+    imageElement.src = imageUrl;
 
     // Register the DOM element as a view
     final String viewId = 'custom-image-${imageData.hashCode}';
@@ -33,9 +34,9 @@ class CustomImageWidget extends StatelessWidget {
 
     // Return a HtmlElementView that displays the registered DOM element
     return SizedBox(
-        width: imageSize,
-        height: imageSize,
-        child: HtmlElementView(viewType: viewId),
-        );
+      width: imageSize,
+      height: imageSize,
+      child: HtmlElementView(viewType: viewId),
+    );
   }
 }

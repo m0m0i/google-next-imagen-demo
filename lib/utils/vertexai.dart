@@ -37,12 +37,11 @@ class VertexAI {
       }
     };
 
-    debugPrint('...calling Imagen 3 preview API');
     try {
       final res = await http.post(
         Uri.https(
           'us-central1-aiplatform.googleapis.com',
-          'v1/projects/next-tokyo-imagen-flutter-demo/locations/us-central1/publishers/google/models/imagen-3.0-generate-preview-0611:predict',
+          'v1/projects/next-tokyo-imagen-flutter-demo/locations/us-central1/publishers/google/models/imagen-3.0-generate-001:predict',
         ),
         headers: headers,
         body: jsonEncode(body),
@@ -51,7 +50,6 @@ class VertexAI {
         ImagenResponse imagenResponse =
             ImagenResponse.fromJson(jsonDecode(res.body));
 
-        debugPrint('Succeeded to generate the iamge');
         return imagenResponse;
       } else {
         debugPrint('Error: ${res.statusCode} - ${res.body}');
@@ -94,7 +92,6 @@ class VertexAI {
       }
     };
 
-    debugPrint('...calling Imagen 2 API');
     try {
       final res = await http.post(
         Uri.https(
@@ -108,7 +105,6 @@ class VertexAI {
         ImagenResponse imagenResponse =
             ImagenResponse.fromJson(jsonDecode(res.body));
 
-        debugPrint('Succeeded to edit iamges');
         return imagenResponse;
       } else {
         debugPrint('Error: ${res.statusCode} - ${res.body}');
@@ -143,12 +139,8 @@ class VertexAI {
           }
         ]
       },
-      "safety_settings": {
-        "threshold":"BLOCK_LOW_AND_ABOVE"
-      }
+      "safety_settings": {"threshold": "BLOCK_LOW_AND_ABOVE"}
     };
-
-    debugPrint('...calling Gemini 1.5 Flash to get the copy');
 
     try {
       final res = await http.post(
@@ -163,7 +155,6 @@ class VertexAI {
         GeminiResponse geminiResponse =
             GeminiResponse.fromJson(jsonDecode(res.body));
 
-        debugPrint('Succeeded to generate text');
         return geminiResponse;
       }
     } catch (e) {
@@ -211,12 +202,8 @@ class VertexAI {
           }
         ]
       },
-      "safety_settings": {
-        "threshold":"BLOCK_LOW_AND_ABOVE"
-      }
+      "safety_settings": {"threshold": "BLOCK_LOW_AND_ABOVE"}
     };
-
-    debugPrint('...calling Gemini 1.5 Flash to enhance the prompt');
 
     try {
       final res = await http.post(
@@ -231,7 +218,6 @@ class VertexAI {
         GeminiResponse geminiResponse =
             GeminiResponse.fromJson(jsonDecode(res.body));
 
-        debugPrint('Succeeded to generate the better prompt');
         return geminiResponse.candidates[0].content.parts[0].text;
       }
     } catch (e) {
