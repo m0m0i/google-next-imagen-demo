@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:math';
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
@@ -20,7 +21,9 @@ class EditImage extends StatefulWidget {
 class _EditImageState extends State<EditImage> {
   XFile? pickedImage;
   Uint8List? imageToRender;
-  late TextEditingController _textController;
+  late TextEditingController textController;
+  String sampleText = "";
+  String sampleTextLabel = "";
 
   final vertexai = VertexAI();
 
@@ -31,12 +34,12 @@ class _EditImageState extends State<EditImage> {
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController();
+    textController = TextEditingController();
   }
 
   @override
   void dispose() {
-    _textController.dispose();
+    textController.dispose();
     super.dispose();
   }
 
@@ -88,6 +91,43 @@ class _EditImageState extends State<EditImage> {
     }
   }
 
+  Widget generateSampleText() {
+    Random random = Random();
+
+    List<String> sampleTextList = [
+      "冬の雪山、壮大な風景",
+      "夏の砂浜、広角",
+      "木製のテーブル、ダークトーン",
+      "背景に町並みを望む窓の横、夕陽、フレア",
+      "日本の田園風景、ドラマチック",
+      "子供部屋、明るい、クローズアップ",
+    ];
+
+    sampleText = sampleTextList[random.nextInt(sampleTextList.length)];
+    sampleTextLabel = "例：$sampleText";
+
+    return Padding(
+      padding: const EdgeInsets.only(left: 24, right: 24),
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+            shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(12),
+        )),
+        onPressed: () {
+          textController.text = sampleText;
+        },
+        child: Text(
+          sampleTextLabel,
+          style: const TextStyle(
+            fontSize: 12,
+            color: Colors.grey,
+            fontStyle: FontStyle.italic,
+          ),
+        ),
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -106,19 +146,16 @@ class _EditImageState extends State<EditImage> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(24),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(24),
-                                  child: imageToRender != null
-                                      ? CustomImageWidget(context,
-                                          imageData: imageToRender!)
-                                      : const Text(
-                                          "Try Imagen 2 image editing"),
-                                ),
+                                child: imageToRender != null
+                                    ? CustomImageWidget(context,
+                                        imageData: imageToRender!)
+                                    : const Text("Try Imagen 2 image editing"),
                               ),
+                              generateSampleText(),
                               Padding(
-                                padding: const EdgeInsets.all(12),
+                                padding: const EdgeInsets.all(24),
                                 child: TextField(
-                                  controller: _textController,
+                                  controller: textController,
                                   minLines: 1,
                                   maxLines: 2,
                                   decoration: InputDecoration(
@@ -126,7 +163,7 @@ class _EditImageState extends State<EditImage> {
                                       onPressed: (sendButtonActive)
                                           ? () async {
                                               final prompt =
-                                                  _textController.value.text;
+                                                  textController.value.text;
                                               if (prompt != "" &&
                                                   pickedImage != null) {
                                                 await handleGenerate(
