@@ -78,7 +78,6 @@ class _CopyWritingState extends State<CopyWriting> {
 
     try {
       var copywriteResponse = await vertexai.copyWriting(prompt, imageToSend);
-      debugPrint(copywriteResponse.candidates[0].content.parts[0].text);
       _textController.text =
           copywriteResponse.candidates[0].content.parts[0].text;
     } catch (e) {

@@ -14,7 +14,6 @@ Future<AccessCredentials> obtainCredentials() async {
   });
   var scopes = ['https://www.googleapis.com/auth/cloud-platform'];
 
-  debugPrint('...obtain credentials');
   var client = http.Client();
   AccessCredentials credentials =
       await obtainAccessCredentialsViaServiceAccount(
@@ -22,6 +21,5 @@ Future<AccessCredentials> obtainCredentials() async {
 
   client.close();
 
-  debugPrint('Succeeded to get the service account credentials');
   return credentials;
 }

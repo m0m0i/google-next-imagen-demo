@@ -2,7 +2,7 @@ import 'dart:convert';
 import 'dart:typed_data';
 import 'dart:html' as html;
 import 'package:flutter/foundation.dart';
-import 'dart:ui' as ui;
+import 'dart:ui_web' as ui;
 
 import 'package:flutter/material.dart';
 
@@ -33,9 +33,9 @@ class CustomImageWidget extends StatelessWidget {
 
     // Return a HtmlElementView that displays the registered DOM element
     return SizedBox(
-        width: imageSize,
-        height: imageSize,
-        child: HtmlElementView(viewType: viewId),
-        );
+      width: imageSize,
+      height: imageSize,
+      child: HtmlElementView(viewType: viewId),
+    );
   }
 }
