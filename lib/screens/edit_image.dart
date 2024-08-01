@@ -1,11 +1,13 @@
 import 'dart:convert';
 import 'dart:math';
 import 'dart:typed_data';
+import 'dart:ui' as ui;
 
 import 'package:flutter/material.dart';
 import 'package:google_next_imagen_demo/utils/error_dialog.dart';
 import 'package:google_next_imagen_demo/utils/loading_indicator.dart';
 import 'package:google_next_imagen_demo/utils/render_image_widget.dart';
+import 'package:google_next_imagen_demo/utils/render_image_widget_default.dart';
 import 'package:google_next_imagen_demo/utils/vertexai.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:image_picker_for_web/image_picker_for_web.dart';
@@ -36,6 +38,9 @@ class _EditImageState extends State<EditImage> {
 
   bool sendButtonActive = true;
 
+  double imageWhratio = 0.0;
+  double imageHwratio = 0.0;
+
   @override
   void initState() {
     super.initState();
@@ -60,6 +65,7 @@ class _EditImageState extends State<EditImage> {
   Future<void> _handlePickImageFromGallery() async {
     pickedImage = await _picker.getImageFromSource(source: ImageSource.gallery);
     imageToRender = await pickedImage?.readAsBytes();
+    await getWHratio(imageToRender!);
 
     setState(() {});
   }
@@ -137,6 +143,17 @@ class _EditImageState extends State<EditImage> {
         ),
       ),
     );
+  }
+
+  Future<void> getWHratio(Uint8List imageBytes) async {
+    ui.Codec codec1 = await ui.instantiateImageCodec(imageBytes);
+    ui.FrameInfo frameInfo1 = await codec1.getNextFrame();
+    int width = frameInfo1.image.width;
+    int height = frameInfo1.image.height;
+    print("幅: $width");
+    print("高さ: $height");
+    imageWhratio = width / height;
+    imageHwratio = width / height;
   }
 
   @override
@@ -219,12 +236,28 @@ class _EditImageState extends State<EditImage> {
                                       );
                                     } else if (imageToRender != null) {
                                       return SizedBox(
-                                        width: imageSize,
-                                        height: imageSize,
-                                        child: CustomImageWidget(
-                                          context,
-                                          imageData: imageToRender!,
-                                        ),
+                                        width: imageWhratio < 1
+                                            ? imageSize * imageWhratio
+                                            : imageSize,
+                                        height: imageWhratio > 1
+                                            ? imageSize * imageHwratio
+                                            : imageSize,
+                                        child: imageWhratio < 1
+                                            ? DefaultCustomImageWidget(
+                                                context,
+                                                imageData: imageToRender!,
+                                                imageSize: imageSize,
+                                              )
+                                            : imageWhratio > 1
+                                                ? CustomImageWidget(
+                                                    context,
+                                                    imageData: imageToRender!,
+                                                  )
+                                                : DefaultCustomImageWidget(
+                                                    context,
+                                                    imageData: imageToRender!,
+                                                    imageSize: imageSize,
+                                                  ),
                                       );
                                     } else {
                                       return const Text(
