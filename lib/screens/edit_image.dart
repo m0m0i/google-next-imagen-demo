@@ -21,6 +21,11 @@ class EditImage extends StatefulWidget {
 class _EditImageState extends State<EditImage> {
   XFile? pickedImage;
   Uint8List? imageToRender;
+  Uint8List? imageToRender1;
+  Uint8List? imageToRender2;
+  Uint8List? imageToRender3;
+  Uint8List? imageToRender4;
+
   late TextEditingController textController;
   String sampleText = "";
   String sampleTextLabel = "";
@@ -75,8 +80,14 @@ class _EditImageState extends State<EditImage> {
 
     try {
       final generatedImage = await vertexai.editImage(prompt, imageToRender!);
-      imageToRender =
+      imageToRender1 =
           base64Decode(generatedImage.predictions[0].bytesBase64Encoded);
+      imageToRender2 =
+          base64Decode(generatedImage.predictions[1].bytesBase64Encoded);
+      imageToRender3 =
+          base64Decode(generatedImage.predictions[2].bytesBase64Encoded);
+      imageToRender4 =
+          base64Decode(generatedImage.predictions[3].bytesBase64Encoded);
     } catch (e) {
       await FirebaseAnalytics.instance.logEvent(
           name: 'Edit image failed',
@@ -130,6 +141,8 @@ class _EditImageState extends State<EditImage> {
 
   @override
   Widget build(BuildContext context) {
+    final screenSize = MediaQuery.of(context).size;
+    final imageSize = screenSize.shortestSide * 0.7;
     return Scaffold(
       appBar: AppBar(
         title: const Text('イメージ編集'),
@@ -146,10 +159,67 @@ class _EditImageState extends State<EditImage> {
                             children: [
                               Padding(
                                 padding: const EdgeInsets.all(24),
-                                child: imageToRender != null
-                                    ? CustomImageWidget(context,
-                                        imageData: imageToRender!)
-                                    : const Text("Try Imagen 2 image editing"),
+                                child: Builder(
+                                  builder: (context) {
+                                    if (imageToRender1 != null) {
+                                      return SizedBox(
+                                        width: imageSize,
+                                        height: imageSize,
+                                        child: SingleChildScrollView(
+                                          scrollDirection: Axis.horizontal,
+                                          child: Row(
+                                            children: [
+                                              SizedBox(
+                                                width: imageSize * 0.8,
+                                                height: imageSize * 0.8,
+                                                child: CustomImageWidget(
+                                                  context,
+                                                  imageData: imageToRender1!,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: imageSize * 0.8,
+                                                height: imageSize * 0.8,
+                                                child: CustomImageWidget(
+                                                  context,
+                                                  imageData: imageToRender2!,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: imageSize * 0.8,
+                                                height: imageSize * 0.8,
+                                                child: CustomImageWidget(
+                                                  context,
+                                                  imageData: imageToRender3!,
+                                                ),
+                                              ),
+                                              SizedBox(
+                                                width: imageSize * 0.8,
+                                                height: imageSize * 0.8,
+                                                child: CustomImageWidget(
+                                                  context,
+                                                  imageData: imageToRender4!,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      );
+                                    } else if (imageToRender != null) {
+                                      return SizedBox(
+                                        width: imageSize,
+                                        height: imageSize,
+                                        child: CustomImageWidget(
+                                          context,
+                                          imageData: imageToRender!,
+                                        ),
+                                      );
+                                    } else {
+                                      return const Text(
+                                          "Try Imagen 2 image editing");
+                                    }
+                                  },
+                                ),
                               ),
                               generateSampleText(),
                               Padding(
