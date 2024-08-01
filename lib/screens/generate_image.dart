@@ -80,7 +80,7 @@ class _GenerateImageState extends State<GenerateImage> {
     Random random = Random();
 
     List<String> sampleTextList = [
-      "「Next Toyko」と書かれた青いビン、晴れた砂浜、ポートレート",
+      "「Next Tokyo」と書かれた青いビン、晴れた砂浜、ポートレート",
       "ふわふわの可愛いコアラ、眠っている、森の背景、プロカメラマンの写真",
       "上から見た本、一番上の本には水彩の鳥のイラスト、本には「VertexAI」と書かれている",
       "パスタディナーの頭上からの撮影、フード雑誌の表紙スタイルのスタジオ写真",
