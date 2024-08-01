@@ -143,6 +143,9 @@ class _EditImageState extends State<EditImage> {
   Widget build(BuildContext context) {
     final screenSize = MediaQuery.of(context).size;
     final imageSize = screenSize.shortestSide * 0.7;
+    final longImageSize = screenSize.longestSide * 0.9;
+    var mainWidthSize =
+        screenSize.width > screenSize.height ? longImageSize : imageSize;
     return Scaffold(
       appBar: AppBar(
         title: const Text('イメージ編集'),
@@ -163,7 +166,7 @@ class _EditImageState extends State<EditImage> {
                                   builder: (context) {
                                     if (imageToRender1 != null) {
                                       return SizedBox(
-                                        width: imageSize,
+                                        width: mainWidthSize,
                                         height: imageSize,
                                         child: SingleChildScrollView(
                                           scrollDirection: Axis.horizontal,
@@ -177,6 +180,9 @@ class _EditImageState extends State<EditImage> {
                                                   imageData: imageToRender1!,
                                                 ),
                                               ),
+                                              const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 24)),
                                               SizedBox(
                                                 width: imageSize * 0.8,
                                                 height: imageSize * 0.8,
@@ -185,6 +191,9 @@ class _EditImageState extends State<EditImage> {
                                                   imageData: imageToRender2!,
                                                 ),
                                               ),
+                                              const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 24)),
                                               SizedBox(
                                                 width: imageSize * 0.8,
                                                 height: imageSize * 0.8,
@@ -193,6 +202,9 @@ class _EditImageState extends State<EditImage> {
                                                   imageData: imageToRender3!,
                                                 ),
                                               ),
+                                              const Padding(
+                                                  padding: EdgeInsets.only(
+                                                      left: 24)),
                                               SizedBox(
                                                 width: imageSize * 0.8,
                                                 height: imageSize * 0.8,
