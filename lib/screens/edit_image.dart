@@ -297,12 +297,12 @@ class _EditImageState extends State<EditImage> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     MaterialButton(
-                                      onPressed: _handlePickImageFromCamera,
-                                      child: const Icon(Icons.photo_camera),
-                                    ),
-                                    MaterialButton(
                                       onPressed: _handlePickImageFromGallery,
                                       child: const Icon(Icons.folder),
+                                    ),
+                                    MaterialButton(
+                                      onPressed: _handlePickImageFromCamera,
+                                      child: const Icon(Icons.photo_camera),
                                     ),
                                   ],
                                 ),

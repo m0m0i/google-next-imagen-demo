@@ -130,12 +130,12 @@ class _CopyWritingState extends State<CopyWriting> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     MaterialButton(
-                                      onPressed: _handlePickImageFromCamera,
-                                      child: const Icon(Icons.photo_camera),
-                                    ),
-                                    MaterialButton(
                                       onPressed: _handlePickImageFromGallery,
                                       child: const Icon(Icons.folder),
+                                    ),
+                                    MaterialButton(
+                                      onPressed: _handlePickImageFromCamera,
+                                      child: const Icon(Icons.photo_camera),
                                     ),
                                     MaterialButton(
                                       onPressed: (sendButtonActive)
